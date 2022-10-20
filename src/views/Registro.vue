@@ -6,16 +6,12 @@ const userStore = useUserStore();
 const nombre = ref();
 const email = ref();
 const pass = ref();
+const validate = ref('needs-validation');
 const res = ref();
 const respSwitch = ref(false);
 
 const envioDatos = async () => {
-    if (nombre.value.length < 3 || !email.value || password.value.length < 6) {
-        res.value = 'Ingresa los datos correctamente';
-        respSwitch.value = true;
-    }
-
-    else {
+    if(document.querySelector('form').checkValidity()){
         try {
             res.value = await userStore.crearUsuario(nombre.value, email.value, pass.value);
             setTimeout(() => {
@@ -28,7 +24,9 @@ const envioDatos = async () => {
         } finally {
             respSwitch.value = true;
         }
-    }
+    };
+
+    validate.value = 'was-validated';
 };
 </script>
 
@@ -39,15 +37,15 @@ const envioDatos = async () => {
             <div class="col">
                 <img src="../assets/green.svg" alt="Logo" width="300" height="250" class=" mt-5 mx-auto d-block">
 
-                <form @submit.prevent="envioDatos">
+                <form :class="`${validate}`" @submit.prevent="envioDatos" novalidate>
                     <div class="mb-3">
-                        <input type="text" class="form-control mt-5" id="text" placeholder="Nombre de la empresa" v-model.trim="nombre" required>
+                        <input type="text" class="form-control mt-5" placeholder="Nombre de la empresa" v-model.trim="nombre" required>
                     </div>
                     <div class="mb-3">
-                        <input type="email" class="form-control" id="email" placeholder="Email" v-model.trim="email" required>
+                        <input type="email" class="form-control" placeholder="Email" v-model.trim="email" required>
                     </div>
                     <div class="mb-3">
-                        <input type="password" class="form-control mb-4" id="password" placeholder="Contraseña" v-model.trim="pass" required>
+                        <input type="password" class="form-control mb-4" placeholder="Contraseña" v-model.trim="pass" required>
                     </div>
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary mt-3" :disabled="userStore.cargandoUsuario">Registrarse</button>

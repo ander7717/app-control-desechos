@@ -84,7 +84,7 @@ export const useUserStore = defineStore('userStore', () => {
   const emailCambioPass = async email => {
     try {
       await sendPasswordResetEmail(auth, email);
-      return 'Se ha enviado un correo de recuperación.';
+      return 'Se ha enviado un correo.';
     } 
 
     catch (error) {

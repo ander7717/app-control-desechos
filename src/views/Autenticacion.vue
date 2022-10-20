@@ -10,6 +10,7 @@ const email = ref(localStorage.getItem('email'));
 const local = localStorage.getItem('email');
 const pass = ref();
 const checked = ref();
+const validate = ref('needs-validation')
 
 const remember = () => {
     if (checked.value == true || checked.value == undefined && local) {
@@ -22,16 +23,13 @@ const remember = () => {
 };
 
 const envioDatos = async () => {
-    if (!email.value || password.value.length < 6) {
-        res.value = "Datos incorrectos.";
-        timer(res, 5000);
-    }
-    
-    else{
+    if(document.querySelector('form').checkValidity()){
         res.value = await userStore.logearUsuario(email.value, pass.value);
         remember()
         timer(res, 5000);
     }
+
+    validate.value = 'was-validated';
 };
 </script>
 
@@ -43,17 +41,19 @@ const envioDatos = async () => {
             <div class="col">
                 <img src="../assets/green.svg" alt="Logo" width="300" height="250" class=" mt-5 mx-auto d-block">
 
-                <form @submit.prevent="envioDatos">
-                    <div class="mb-3">
-                        <input type="email" class="form-control mt-5" id="email" placeholder="Email" v-model.trim="email" required>
+                <form @submit.prevent="envioDatos" novalidate>
+                    <div :class="`mb-3 ${validate}`">
+                        <input type="email" class="form-control mt-5" placeholder="Email" v-model.trim="email" required>
+                        <div class="valid-feedback">Valid.</div>
+                        <div class="invalid-feedback">Please fill out this field.</div>
                     </div>
-                    <div class="mb-3">
-                        <input type="password" class="form-control mb-4" id="password" placeholder="Contraseña" v-model.trim="pass" required>
+                    <div :class="`mb-3 ${validate}`">
+                        <input type="password" class="form-control mb-4" placeholder="Contraseña" v-model.trim="pass" required>
                     </div>
                     <div class="row mb-4">
                         <div class="col-5 d-flex justify-content-center">
                             <div class="form-check">
-                                <input class="form-check-input mt-2" type="checkbox" id="checkbox" v-model="checked" :checked="local" />
+                                <input class="form-check-input mt-2" type="checkbox" id="checkbox" v-model="checked" :checked="local">
                                 <label class="form-check-label mt-1" for="checkbox">Recuérdame</label>
                             </div>
                         </div>

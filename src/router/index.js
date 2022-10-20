@@ -61,7 +61,6 @@ const router = createRouter({
     {
       path: '/recuperacion',
       name: 'recuperacion',
-      beforeEnter: authLogin,
       component: () => import('../views/Recuperacion.vue')
     }
   ]
