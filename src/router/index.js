@@ -3,8 +3,7 @@ import { useUserStore } from '../stores/user';
 
 const requireAuthInicio = async (to, from, next) => {
   const userStore = useUserStore();
-  userStore.cargando = true;
-  const user = await userStore.usuarioActual();
+  const user = await userStore.currentUser();
   if (user && user.emailVerified) {
       next();
   }
@@ -12,12 +11,11 @@ const requireAuthInicio = async (to, from, next) => {
   else {
       next("/autenticacion");
   }
-  userStore.cargando = false;
 };
 
 const authLogin = async (to, from, next) => {
   const userStore = useUserStore();
-  const user = await userStore.usuarioActual();
+  const user = await userStore.currentUser();
   if (!user) {
     next();
   }
@@ -62,6 +60,11 @@ const router = createRouter({
       path: '/recuperacion',
       name: 'recuperacion',
       component: () => import('../views/Recuperacion.vue')
+    },
+    {
+      path: '/:catchAll(.*)',
+      name: 'NotFound',
+      component: () => import('../views/404.vue')
     }
   ]
 });

@@ -1,29 +1,3 @@
-# Sistema_Control_Desechos
+## Sistema para el Control de la disposición de materiales de desecho electrónico
 
-This template should help get you started developing with Vue 3 in Vite.
-
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+Sistema de información bajo plataforma web para el control de la disposición de materiales de desecho electrónico, capaz de llevar un registro de los mismos, su tipo de material y la cantidad, volumen o peso de los que pueda llegar a poseer una empresa, también brindaría información sobre el tratamiento adecuado que se les daría, las empresas que se encargarían de su manejo y transporte, y a su vez, acerca de la vigencia o no de los permisos asociados las empresas involucradas.

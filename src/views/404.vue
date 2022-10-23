@@ -4,6 +4,6 @@
 
 <template>
     <div>
-        <h1 class="mt-5 text-center">Bienvenido</h1>
+        <h1 class="mt-5 text-center">La página no existe.</h1>
     </div>
 </template>

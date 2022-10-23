@@ -1,42 +1,41 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
 import { auth } from '../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
 import router from '../router';
 
 export const useUserStore = defineStore('userStore', () => {
   const userData = ref(null);
-  const cargandoUsuario = ref(false);
-  const cargando = ref(false);
+  const loadingUser = ref(false);
   const defaultPhoto = 'https://www.pngitem.com/pimgs/m/78-788231_icon-blue-company-icon-png-transparent-png.png';
 
-  const crearUsuario = async (nombre, email, pass) => {
-    cargandoUsuario.value = true;
+  const createUser = async (name, email, pass) => {
+    loadingUser.value = true;
 
     try {
       await createUserWithEmailAndPassword(auth, email, pass);
-      await updateProfile(auth.currentUser, {displayName: nombre, photoURL: defaultPhoto});
+      await updateProfile(auth.currentUser, {displayName: name, photoURL: defaultPhoto});
       await sendEmailVerification(auth.currentUser);
       await signOut(auth);
-      return 'Se ha enviado un correo de verificación.'
+      return 'Se ha enviado un correo de verificación.';
       
     } catch (error) {
         console.log(error.code, error.message);
-        return 'Hubo un problema.'
+        return 'Hubo un problema.';
 
     } finally {
-      cargandoUsuario.value = false;
-    }
+      loadingUser.value = false;
+    };
   };
 
-  const logearUsuario = async (email, pass) => {
-    cargandoUsuario.value = true;
+  const login = async (email, pass) => {
+    loadingUser.value = true;
 
     try {
       const { user } = await signInWithEmailAndPassword(auth, email, pass);
 
       if(auth.currentUser.emailVerified){
-        userData.value = {nombre: auth.currentUser.displayName, email: user.email, foto: auth.currentUser.photoURL, uid: user.uid};
+        userData.value = {name: user.displayName, email: user.email, photo: user.photoURL, uid: user.uid};
         router.push("/");
 
       } else {
@@ -49,11 +48,11 @@ export const useUserStore = defineStore('userStore', () => {
       return error.code == 'auth/wrong-password' || 'auth/user-not-found' ? 'Datos incorrectos.' : error.code;
 
     } finally {
-      cargandoUsuario.value = false;
-    }
+      loadingUser.value = false;
+    };
   };
   
-  const salirUsuario = async () => {
+  const logout = async () => {
     try {
       await signOut(auth);
       userData.value = null;
@@ -61,14 +60,14 @@ export const useUserStore = defineStore('userStore', () => {
 
     } catch (error) {
       console.log(error.code, error.message);
-    }
+    };
   };
 
-  const usuarioActual = () => {
+  const currentUser = () => {
     return new Promise((resolve, reject) => {
       const unsubscribe = onAuthStateChanged(auth, user => {
         if (user) {
-          userData.value = {nombre: user.displayName, email: user.email, foto: user.photoURL, uid: user.uid};
+          userData.value = {name: user.displayName, email: user.email, photo: user.photoURL, uid: user.uid};
 
         } else {
           userData.value = null;
@@ -81,7 +80,9 @@ export const useUserStore = defineStore('userStore', () => {
     });
   }
 
-  const emailCambioPass = async email => {
+  const changePass = async email => {
+    loadingUser.value = true;
+
     try {
       await sendPasswordResetEmail(auth, email);
       return 'Se ha enviado un correo.';
@@ -100,19 +101,27 @@ export const useUserStore = defineStore('userStore', () => {
       else {
         return error.code;
       }
+
+    } finally {
+      loadingUser.value = false;
     };
   };
 
   const updateName = async name => {
+    loadingUser.value = true;
+
     try {
       await updateProfile(auth.currentUser, { displayName: name});
-      userData.value = {...userData.value, nombre: name};
+      userData.value = {...userData.value, name};
       return 'Informacion actualizada.';
 
     } catch (error) {
       console.log(error.code, error.message);
       return 'Hubo un problema.';
-    }
+
+    } finally {
+      loadingUser.value = false;
+    };
   };
 
   const emailVerified = async () => auth.currentUser.emailVerified;
@@ -121,13 +130,12 @@ export const useUserStore = defineStore('userStore', () => {
     auth,
     router,
     userData,
-    cargandoUsuario,
-    cargando,
-    crearUsuario,
-    logearUsuario,
-    salirUsuario,
-    usuarioActual,
-    emailCambioPass,
+    loadingUser,
+    createUser,
+    login,
+    logout,
+    currentUser,
+    changePass,
     updateName,
     emailVerified
   };

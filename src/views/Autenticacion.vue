@@ -10,7 +10,7 @@ const email = ref(localStorage.getItem('email'));
 const local = localStorage.getItem('email');
 const pass = ref();
 const checked = ref();
-const validate = ref('needs-validation')
+const validate = ref('needs-validation');
 
 const remember = () => {
     if (checked.value == true || checked.value == undefined && local) {
@@ -22,10 +22,10 @@ const remember = () => {
     }
 };
 
-const envioDatos = async () => {
-    if(document.querySelector('form').checkValidity()){
-        res.value = await userStore.logearUsuario(email.value, pass.value);
-        remember()
+const submitData = async () => {
+    if(document.querySelector('form').checkValidity()) {
+        res.value = await userStore.login(email.value, pass.value);
+        remember();
         timer(res, 5000);
     }
 
@@ -36,16 +36,13 @@ const envioDatos = async () => {
 <template>
     <div class="container">
         <div class="row">
-            <div class="col-4">
-            </div>
+            <div class="col d-none d-sm-block"></div>
             <div class="col">
-                <img src="../assets/green.svg" alt="Logo" width="300" height="250" class=" mt-5 mx-auto d-block">
+                <img src="../assets/green.svg" alt="Logo" width="300" height="250" class="mt-3 mt-sm-5 mx-auto d-block">
 
-                <form @submit.prevent="envioDatos" novalidate>
+                <form @submit.prevent="submitData" novalidate>
                     <div :class="`mb-3 ${validate}`">
-                        <input type="email" class="form-control mt-5" placeholder="Email" v-model.trim="email" required>
-                        <div class="valid-feedback">Valid.</div>
-                        <div class="invalid-feedback">Please fill out this field.</div>
+                        <input type="email" class="form-control mt-4 mt-sm-5" placeholder="Email" v-model.trim="email" required>
                     </div>
                     <div :class="`mb-3 ${validate}`">
                         <input type="password" class="form-control mb-4" placeholder="Contraseña" v-model.trim="pass" required>
@@ -58,20 +55,19 @@ const envioDatos = async () => {
                             </div>
                         </div>
                         <div class="col-7">
-                            <button type="button" class="btn btn-link" :disabled="userStore.cargandoUsuario"><RouterLink to="/recuperacion">¿Olvidaste la contraseña?</RouterLink></button>
+                            <button type="button" class="btn btn-link py-0 py-xl-1"><RouterLink to="/recuperacion">¿Olvidaste la contraseña?</RouterLink></button>
                         </div>
                     </div>
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary mb-4 mt-3" :disabled="userStore.cargandoUsuario">Entrar</button>
+                        <button type="submit" class="btn btn-primary mb-3 mb-sm-4 mt-sm-3" :disabled="userStore.loadingUser">Entrar</button>
                     </div>
-
                     <div class="text-center">
                         <p>¿No eres un usuario? <RouterLink to="/registro">Regístrate</RouterLink></p>
                     </div>
                 </form>
                 <div :class="`alert alert-danger mt-4 text-center`" role="alert" v-if="res">{{ res }}</div>
             </div>
-            <div class="col-4"></div>
+            <div class="col d-none d-sm-block"></div>
         </div>
     </div>
 </template>
