@@ -61,7 +61,7 @@ const submitData = async () => {
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary mb-3 mb-sm-4 mt-sm-3" :disabled="userStore.loadingUser">Entrar</button>
                     </div>
-                    <div class="text-center">
+                    <div class="text-center d-none d-sm-none d-md-block">
                         <p>¿No eres un usuario? <RouterLink to="/registro">Regístrate</RouterLink></p>
                     </div>
                 </form>
