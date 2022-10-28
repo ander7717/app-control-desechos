@@ -7,7 +7,7 @@ import router from '../router';
 export const useUserStore = defineStore('userStore', () => {
   const userData = ref(null);
   const loadingUser = ref(false);
-  const defaultPhoto = 'https://www.pngitem.com/pimgs/m/78-788231_icon-blue-company-icon-png-transparent-png.png';
+  const defaultPhoto = 'https://firebasestorage.googleapis.com/v0/b/sistema-control-desechos.appspot.com/o/images%2Fusers%2Fblue.png?alt=media&token=56acc29d-ff0a-4bc7-83cc-a6dde3556cf3';
 
   const createUser = async (name, email, pass) => {
     loadingUser.value = true;
@@ -124,6 +124,17 @@ export const useUserStore = defineStore('userStore', () => {
     };
   };
 
+  const updatePhoto = async url => {
+
+    try {
+      await updateProfile(auth.currentUser, { photoURL: url});
+      userData.value = {...userData.value, photo: url};
+
+    } catch (error) {
+      console.log(error.code, error.message);
+    };
+  };
+
   const emailVerified = async () => auth.currentUser.emailVerified;
 
   return {
@@ -137,6 +148,7 @@ export const useUserStore = defineStore('userStore', () => {
     currentUser,
     changePass,
     updateName,
+    updatePhoto,
     emailVerified
   };
 });

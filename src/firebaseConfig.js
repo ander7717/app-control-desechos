@@ -1,5 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, setPersistence, browserSessionPersistence } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBZ36k3LxUvAxmdg6drZkooljiHPnsQUW8",
@@ -10,9 +12,12 @@ const firebaseConfig = {
   appId: "1:580462217515:web:f0f0d8a68d201b2f2add6e"
 };
 
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-const auth = getAuth();
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
 auth.languageCode = 'es';
 
 const sessionPersistence = async () => {
@@ -25,4 +30,4 @@ const sessionPersistence = async () => {
 
 sessionPersistence();
 
-export { auth };
+export { auth, db, storage };
