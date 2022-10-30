@@ -32,7 +32,7 @@ const submitData = async () => {
         <div class="row">
             <div class="col d-none d-sm-block"></div>
             <div class="col">
-                <img src="../assets/green.png" alt="Logo" width="300" height="250" class="mt-3 mt-sm-5 mx-auto d-block">
+                <img src="../assets/green.svg" alt="Logo" width="300" height="250" class="mt-3 mt-sm-5 mx-auto d-block">
 
                 <form :class="`${validate}`" @submit.prevent="submitData" novalidate>
                     <div class="mb-3">

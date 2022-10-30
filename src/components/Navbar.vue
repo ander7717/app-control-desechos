@@ -7,7 +7,7 @@ const userStore = useUserStore();
 <template>
     <nav class="navbar navbar-expand bg-light">
       <div class="container-fluid">
-        <RouterLink class="navbar-brand d-none d-md-block" to="/">Green Company</RouterLink>
+        <RouterLink class="navbar-brand d-none d-md-block" to="/">Green Tree</RouterLink>
           <div class="navbar-nav ms-auto">
             <img class="me-2 rounded-circle" v-if="userStore.userData && userStore.emailVerified" :src= userStore.userData.photo alt="Company" width="50" height="40" >
             <span class="navbar-text me-5" v-if="userStore.userData && userStore.emailVerified">{{userStore.userData.name}}</span>

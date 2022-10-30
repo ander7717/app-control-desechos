@@ -29,6 +29,12 @@ const authLogin = async (to, from, next) => {
   }
 };
 
+const waitUser = async (to, from, next) => {
+  const userStore = useUserStore();
+  await userStore.currentUser();
+    next();
+};
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -59,6 +65,7 @@ const router = createRouter({
     {
       path: '/recuperacion',
       name: 'recuperacion',
+      beforeEnter: waitUser,
       component: () => import('../views/Recuperacion.vue')
     },
     {

@@ -93,6 +93,10 @@ const associatePhoto = async url => {
                     <div class="mb-3">
                         <input type="text" class="form-control" v-model.trim="name" required>
                     </div>
+                    <div class="mb-3">
+                        <input type="date" class="form-control">
+                        <div class="form-text ms-1">Fecha de vencimiento del RACDA.</div>
+                    </div>
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary mt-3" :disabled="userStore.loadingUser">Actualizar</button>
                     </div>
