@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { onBeforeUpdate, ref } from 'vue';
+import { ref } from 'vue';
 import { auth, db } from '../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
 import router from '../router';
@@ -8,6 +8,7 @@ import { doc, getDoc } from "firebase/firestore";
 export const useUserStore = defineStore('userStore', () => {
   const userData = ref(null);
   const loadingUser = ref(false);
+  const wait = ref(null);
   const defaultPhoto = 'https://firebasestorage.googleapis.com/v0/b/sistema-control-desechos.appspot.com/o/images%2Fusers%2Fblue.png?alt=media&token=56acc29d-ff0a-4bc7-83cc-a6dde3556cf3';
 
   const createUser = async (name, email, pass) => {
@@ -151,12 +152,32 @@ export const useUserStore = defineStore('userStore', () => {
     }
   };
 
+  const w = () => {
+    if(userData.value.expDate == null){
+      wait.value = 3
+    }
+    else {
+      switch (new Date(userData?.value.expDate) > Date.now()) {
+        case true:
+          wait.value = 1;
+          break;
+        case false:
+          wait.value = 2;
+          break;
+        default:
+          wait.value = 3;
+          break;
+      };
+    };
+  };
+
   const emailVerified = async () => auth.currentUser.emailVerified;
 
   return {
     auth,
     router,
     userData,
+    wait,
     loadingUser,
     createUser,
     login,
@@ -166,6 +187,7 @@ export const useUserStore = defineStore('userStore', () => {
     updateName,
     updatePhoto,
     emailVerified,
-    personalRacda
+    personalRacda,
+    w
   };
 });
