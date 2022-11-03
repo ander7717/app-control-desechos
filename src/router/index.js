@@ -4,6 +4,7 @@ import { useUserStore } from '../stores/user';
 const requireAuthInicio = async (to, from, next) => {
   const userStore = useUserStore();
   const user = await userStore.currentUser();
+  await userStore.personalRacda();
   if (user && user.emailVerified) {
       next();
   }

@@ -13,11 +13,13 @@ const email = ref(userStore.userData.email);
 const name = ref(userStore.userData.name);
 const validate = ref('needs-validation')
 const image = ref(null);
+const expDate = ref(userStore.userData.expDate);
 
 const submitData = async () => {
-    if(document.querySelector('form').checkValidity()) {
+    if(document.getElementById('main').checkValidity()) {
         try {
             res.value = await userStore.updateName(name.value);
+            associateRacda();
         
         } catch (error) {
             res.value = 'Hubo un problema.';
@@ -64,11 +66,26 @@ const loadPhoto = async () => {
 
 const associatePhoto = async url => {
     try {
-        const docRef = doc(db, "userImg", userStore.userData.uid);
+        const docRef = doc(db, "user", userStore.userData.uid);
 
         await setDoc(docRef, {
             url
-        });
+        }, { merge: true });
+
+    } catch (e) {
+        console.log(error.code, error.message);
+    };
+};
+
+const associateRacda = async () => {
+    try {
+        const docRef = doc(db, "user", userStore.userData.uid);
+
+        await setDoc(docRef, {
+            expDate: expDate.value
+        }, { merge: true });
+
+        userStore.userData = {...userStore.userData, expDate: expDate.value};
 
     } catch (e) {
         console.log(error.code, error.message);
@@ -86,7 +103,7 @@ const associatePhoto = async url => {
                     <input type="file" id="inputImg" class="form-control mb-3" accept="image/*" @change="selectPhoto($event)" style="display: none; visibility: none">
                 </form>
 
-                <form :class="`${validate}`" @submit.prevent="submitData" novalidate>
+                <form id="main" :class="`${validate}`" @submit.prevent="submitData" novalidate>
                     <div class="mb-3">
                         <input type="email" class="form-control mt-4 mt-sm-5" v-model.trim="email" disabled required>
                     </div>
@@ -94,7 +111,7 @@ const associatePhoto = async url => {
                         <input type="text" class="form-control" v-model.trim="name" required>
                     </div>
                     <div class="mb-3">
-                        <input type="date" class="form-control">
+                        <input type="date" class="form-control" v-model="expDate" required>
                         <div class="form-text ms-1">Fecha de vencimiento del RACDA.</div>
                     </div>
                     <div class="d-grid">

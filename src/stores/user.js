@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
-import { auth } from '../firebaseConfig';
+import { onBeforeUpdate, ref } from 'vue';
+import { auth, db } from '../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
 import router from '../router';
+import { doc, getDoc } from "firebase/firestore";
 
 export const useUserStore = defineStore('userStore', () => {
   const userData = ref(null);
@@ -63,7 +64,7 @@ export const useUserStore = defineStore('userStore', () => {
     };
   };
 
-  const currentUser = () => {
+  const currentUser = async () => {
     return new Promise((resolve, reject) => {
       const unsubscribe = onAuthStateChanged(auth, user => {
         if (user) {
@@ -135,6 +136,21 @@ export const useUserStore = defineStore('userStore', () => {
     };
   };
 
+  const personalRacda = async () => {
+    try {
+      const docRef = doc(db, "user", userData.value.uid);
+      const docSnap = await getDoc(docRef);
+    
+      if (docSnap.exists()) {
+        userData.value = {...userData.value, expDate: docSnap.data().expDate};
+      } else {
+          console.log("No existe el documento");
+      }
+    } catch (error) {
+      console.log(error.code, error.message);
+    }
+  };
+
   const emailVerified = async () => auth.currentUser.emailVerified;
 
   return {
@@ -149,6 +165,7 @@ export const useUserStore = defineStore('userStore', () => {
     changePass,
     updateName,
     updatePhoto,
-    emailVerified
+    emailVerified,
+    personalRacda
   };
 });
