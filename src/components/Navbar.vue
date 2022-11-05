@@ -13,7 +13,7 @@ new Tooltip(document.body, {
 
 watch(() => route.params, () => {
   if(userStore.userData){
-    userStore.w()
+    userStore.racdaAlert()
   };
 });
 </script>

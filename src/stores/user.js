@@ -1,15 +1,18 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { auth, db } from '../firebaseConfig';
+import { useMix } from '../composables/mix';
+import { auth } from '../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
 import router from '../router';
-import { doc, getDoc } from "firebase/firestore";
 
 export const useUserStore = defineStore('userStore', () => {
   const userData = ref(null);
+  const loading = ref(false);
   const loadingUser = ref(false);
   const wait = ref(null);
   const defaultPhoto = 'https://firebasestorage.googleapis.com/v0/b/sistema-control-desechos.appspot.com/o/images%2Fusers%2Fblue.png?alt=media&token=56acc29d-ff0a-4bc7-83cc-a6dde3556cf3';
+
+  const { personalRacda, racdaAlert } = useMix();
 
   const createUser = async (name, email, pass) => {
     loadingUser.value = true;
@@ -42,7 +45,7 @@ export const useUserStore = defineStore('userStore', () => {
 
       } else {
         await signOut(auth);
-        return 'Debes verificar tu correo.';      
+        return 'Debes verificar tu correo.';
       }
 
     } catch (error) {
@@ -110,7 +113,7 @@ export const useUserStore = defineStore('userStore', () => {
   };
 
   const updateName = async name => {
-    loadingUser.value = true;
+    // loadingUser.value = true;
 
     try {
       await updateProfile(auth.currentUser, { displayName: name});
@@ -122,7 +125,7 @@ export const useUserStore = defineStore('userStore', () => {
       return 'Hubo un problema.';
 
     } finally {
-      loadingUser.value = false;
+      // loadingUser.value = false;
     };
   };
 
@@ -137,40 +140,6 @@ export const useUserStore = defineStore('userStore', () => {
     };
   };
 
-  const personalRacda = async () => {
-    try {
-      const docRef = doc(db, "user", userData.value.uid);
-      const docSnap = await getDoc(docRef);
-    
-      if (docSnap.exists()) {
-        userData.value = {...userData.value, expDate: docSnap.data().expDate};
-      } else {
-          console.log("No existe el documento");
-      }
-    } catch (error) {
-      console.log(error.code, error.message);
-    }
-  };
-
-  const w = () => {
-    if(userData.value.expDate == null){
-      wait.value = 3
-    }
-    else {
-      switch (new Date(userData?.value.expDate) > Date.now()) {
-        case true:
-          wait.value = 1;
-          break;
-        case false:
-          wait.value = 2;
-          break;
-        default:
-          wait.value = 3;
-          break;
-      };
-    };
-  };
-
   const emailVerified = async () => auth.currentUser.emailVerified;
 
   return {
@@ -178,6 +147,7 @@ export const useUserStore = defineStore('userStore', () => {
     router,
     userData,
     wait,
+    loading,
     loadingUser,
     createUser,
     login,
@@ -188,6 +158,6 @@ export const useUserStore = defineStore('userStore', () => {
     updatePhoto,
     emailVerified,
     personalRacda,
-    w
+    racdaAlert
   };
 });

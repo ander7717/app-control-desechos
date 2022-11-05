@@ -3,15 +3,29 @@ import { useUserStore } from '../stores/user';
 
 const requireAuthInicio = async (to, from, next) => {
   const userStore = useUserStore();
+  userStore.loading = true;
+
+  if(from.path == '/' || from.path == '/usuario'){
+    userStore.loading = false;
+  }
+
   const user = await userStore.currentUser();
+
   if (user && user.emailVerified) {
+    if(to.name == 'NotFound'){
+      next('/');
+    }
+    else{
       await userStore.personalRacda();
       next();
+    }
   }
 
   else {
       next("/autenticacion");
   }
+
+  userStore.loading = false;
 };
 
 const authLogin = async (to, from, next) => {

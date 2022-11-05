@@ -86,7 +86,7 @@ const associateRacda = async () => {
         }, { merge: true });
 
         userStore.userData = {...userStore.userData, expDate: expDate.value};
-        userStore.w();
+        userStore.racdaAlert();
 
     } catch (e) {
         console.log(error.code, error.message);

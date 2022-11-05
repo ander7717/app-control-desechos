@@ -18,8 +18,11 @@
             <div class="modal-body">
                 <form class="row g-3">
                     <div class="col-md-6">
-                        <label for="inputEmail4" class="form-label">Desecho</label>
-                        <input type="email" class="form-control" id="inputEmail4">
+                        <label for="inputDesecho" class="form-label">Desecho</label>
+                        <select id="inputDesecho" class="form-select">
+                        <option selected>...</option>
+                        <option>...</option>
+                        </select>
                     </div>
                     <div class="col-md-6">
                         <label for="inputTratamiento" class="form-label">Tratamiento</label>
