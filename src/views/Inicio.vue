@@ -1,5 +1,14 @@
 <script setup>
+import { ref } from 'vue';
+import VueMultiselect from 'vue-multiselect';
 
+const selectedMaterial = ref(null);
+const selectedTreatment = ref(null);
+const selectedCP = ref(null);
+
+const materialOptions = ['Pantalla', 'Teléfono', 'Computadora', 'Disco Duro (HDD)', 'Disco Sólido (SSD)', 'Ram', 'Tarjeta Madre', 'Procesador (CPU)', 'Tarjeta de Video (GPU)', 'Fuente de Poder (PSU)', 'Mouse'];
+const treatmentOptions = ['Reciclaje', 'Reutilización/Reparación', 'Re-Valorización Energética', 'Eliminación'];
+const cpOptions = ['uds', 'g', 'kg', 'tn'];
 </script>
 
 <template>
@@ -18,45 +27,39 @@
             <div class="modal-body">
                 <form class="row g-3">
                     <div class="col-md-6">
-                        <label for="inputDesecho" class="form-label">Desecho</label>
-                        <select id="inputDesecho" class="form-select">
-                        <option selected>...</option>
-                        <option>...</option>
-                        </select>
+                        <label class="form-label">Desecho</label>
+                        <VueMultiselect
+                        v-model="selectedMaterial"
+                        :options="materialOptions"
+                        :allow-empty="false"
+                        :show-labels="false"
+                        placeholder="..."
+                        />
                     </div>
                     <div class="col-md-6">
-                        <label for="inputTratamiento" class="form-label">Tratamiento</label>
-                        <select id="inputTratamiento" class="form-select">
-                        <option selected>...</option>
-                        <option>...</option>
-                        </select>
+                        <label class="form-label">Tratamiento</label>
+                        <VueMultiselect
+                        v-model="selectedTreatment"
+                        :options="treatmentOptions"
+                        :allow-empty="false"
+                        :show-labels="false"
+                        placeholder="..."
+                        />
                     </div>
-                    <div class="row mt-4">
-                        <div class="col-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
-                                <label class="form-check-label" for="gridRadios1">
-                                    Cantidad
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
-                                <label class="form-check-label" for="gridRadios2">
-                                    Peso
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-6 mt-2">
-                            <input type="number" class="form-control">
-                        </div>
-                        <div class="col-3 mt-2">
-                            <select class="form-select">
-                            <option selected>und.</option>
-                            <option>und.</option>
-                            </select>
-                        </div>
+                    <div class="col-6 mt-3">
+                        <label for="CP" class="form-label">Cantidad/Peso</label>
+                        <input type="number" class="form-control" id="CP">
                     </div>
-
+                    <div class="col-3 mt-3">
+                        <label class="form-label">Unidades</label>
+                        <VueMultiselect
+                        v-model="selectedCP"
+                        :options="cpOptions"
+                        :allow-empty="false"
+                        :show-labels="false"
+                        placeholder="..."
+                        />
+                    </div>
                     <div class="col-8">
                         <label for="inputAddress" class="form-label">Empresa de Transporte</label>
                         <input type="text" class="form-control" id="inputAddress" placeholder="">
@@ -97,7 +100,7 @@
             <tr>
             <th scope="row">1</th>
             <td>Pantallas</td>
-            <td>16 unid</td>
+            <td>16 uds</td>
             <td>Reciclaje</td>
             <td>Transporte Rodriguez C.A.</td>
             <td>Venezuela Limpia C.A.</td>
@@ -114,3 +117,61 @@
         </table>
     </div>
 </template>
+
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
+<style>
+.multiselect__placeholder {
+  display: inline-block !important;
+  margin-bottom: 0px !important;
+  padding-top: 0px !important;
+}
+
+.multiselect.invalid .multiselect__tags {
+  border: 1px solid #f86c6b !important;
+}
+
+.multiselect__option--highlight {
+  background: #428bca !important;
+}
+
+.multiselect__option--highlight:after {
+  background: #428bca !important;
+}
+
+.multiselect__tags {
+  min-height: 10px;
+  border: 1px solid #ced4da !important;
+}
+
+.multiselect__placeholder{
+  margin-left: 10px;
+  margin-top: 2px;
+}
+
+.multiselect__tag {
+  background: #f0f0f0 !important;
+  border: 1px solid rgba(60, 60, 60, 0.26) !important;
+  color: black !important;
+  margin-bottom: 0px !important;
+  margin-right: 5px !important;
+}
+
+.multiselect__tag-icon:after {
+  color: rgba(60, 60, 60, 0.5) !important;
+}
+
+.multiselect__tag-icon:focus,
+.multiselect__tag-icon:hover {
+  background: #f0f0f0 !important;
+}
+
+.multiselect__tag-icon:focus:after,
+.multiselect__tag-icon:hover:after {
+  color: red !important;
+}
+
+.multiselect__select:before {
+    color: black !important;
+    border-top-color: black !important;
+}
+</style>
