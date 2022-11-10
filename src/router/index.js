@@ -46,7 +46,11 @@ const authLogin = async (to, from, next) => {
 
 const waitUser = async (to, from, next) => {
   const userStore = useUserStore();
-  await userStore.currentUser();
+  const user = await userStore.currentUser();
+
+  if (user && user.emailVerified) {
+    await userStore.personalRacda();
+  }
     next();
 };
 
