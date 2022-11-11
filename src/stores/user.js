@@ -113,7 +113,6 @@ export const useUserStore = defineStore('userStore', () => {
   };
 
   const updateName = async name => {
-    // loadingUser.value = true;
 
     try {
       await updateProfile(auth.currentUser, { displayName: name});
@@ -123,10 +122,7 @@ export const useUserStore = defineStore('userStore', () => {
     } catch (error) {
       console.log(error.code, error.message);
       return 'Hubo un problema.';
-
-    } finally {
-      // loadingUser.value = false;
-    };
+    }
   };
 
   const updatePhoto = async url => {

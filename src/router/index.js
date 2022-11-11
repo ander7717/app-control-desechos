@@ -5,7 +5,7 @@ const requireAuthInicio = async (to, from, next) => {
   const userStore = useUserStore();
   userStore.loading = true;
 
-  if(from.path == '/' || from.path == '/usuario'){
+  if(from.path == '/' || from.path == '/usuario' || from.path == '/recuperacion'){
     userStore.loading = false;
   }
 

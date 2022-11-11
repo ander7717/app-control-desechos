@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { db } from '../firebaseConfig';
-import { getDocs, query, orderBy, where, collection, addDoc } from 'firebase/firestore'; 
+import { doc, deleteDoc, getDocs, query, orderBy, where, collection, addDoc } from 'firebase/firestore'; 
 import { useUserStore } from '../stores/user';
 import VueMultiselect from 'vue-multiselect';
 
@@ -105,21 +105,42 @@ const getItems = async () => {
     const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach((doc) => {
-      showData(tabCont, doc.data())
+      showData(tabCont, doc.data(), doc.id)
     });    
+
+    const delIcon = document.querySelectorAll('.bi-trash')
+    delIcon.forEach(i => {
+      const id = i.parentElement.parentElement.firstElementChild.innerHTML
+
+      i.addEventListener("click", e => {
+        i.parentElement.parentElement.remove()
+        deleteItem(id)
+      });
+    });
+
   } catch (error) {
     console.log(error.code, error.message);
   }
 };
 
-const showData = (table, data) => {
+const deleteItem = async id => {
+  try {
+    await deleteDoc(doc(db, "item", id));
+  } catch (error) {
+    console.log(error.code, error.message);
+  };
+};
+
+const showData = (table, data, id) => {
   table.innerHTML += `
                       <tr>
+                        <td hidden>${id}</td>
                         <td>${data.desecho}</td>
                         <td>${data.cp} ${data.selectedCP}</td>
                         <td>${data.tratamiento}</td>
                         <td>${data.empTrans}</td>
                         <td>${data.empTrat}</td>
+                        <td><i class="bi bi-trash" style="cursor: pointer;"></i></td>
                       </tr>
                       `
 };
@@ -127,13 +148,14 @@ const showData = (table, data) => {
 onMounted(() => {
   getItems();
 });
-
 </script>
 
 <template>
   <div>
     <div class="d-grid gap-2 d-flex justify-content-end me-3 mt-3">
-      <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Nuevo Registro</button>
+      <button v-if="userStore.wait == 1" type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Nuevo Registro</button>
+      <button v-if="userStore.wait == 2" type="button" class="btn btn-outline-danger" disabled>Renueve el Racda</button>
+      <button v-if="userStore.wait == 3" type="button" class="btn btn-outline-warning" disabled>Ingrese el Racda</button>
     </div>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -217,6 +239,7 @@ onMounted(() => {
           <th scope="col">Tratamiento</th>
           <th scope="col">Emp. Transporte</th>
           <th scope="col">Emp. Tratamiento</th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody id="table-content"></tbody>
@@ -225,6 +248,7 @@ onMounted(() => {
 </template>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
+<style src="bootstrap-icons/font/bootstrap-icons.css"></style>
 <style>
 .multiselect__placeholder {
   display: inline-block !important;
